@@ -19,11 +19,9 @@ $.UsersSearch.prototype.bindEvents = function() {
   this.input.keyup(function(){
     this.handleInput();
   }.bind(this));
-  // debugger
 };
 
 $.UsersSearch.prototype.handleInput = function(){
-      // debugger
   $.ajax({
     url: "/users/search",
     dataType: "json",
@@ -38,11 +36,24 @@ $.UsersSearch.prototype.handleInput = function(){
 
 $.UsersSearch.prototype.renderResults = function(result) {
   this.$ul.empty();
+
+  var followedString;
+
   $.each(result, function(index, user) {
+    followedString = user.followed ? "followed" : "unfollowed";
     var anchor = $("<a>");
     var url = "/users/" + user.id;
     anchor.attr("href", url).html(user.username);
-    var li = $("<li>").append(anchor);
+
+    var button = $("<button>");
+    var options = {
+      userId: user.id,
+      followState: followedString
+    };
+    button.followToggle(options);
+
+    var li = $("<li>").append(anchor).append(button);
+
     li.appendTo(this.$ul);
   }.bind(this));
 };
